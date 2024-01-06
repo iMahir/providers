@@ -1,6 +1,5 @@
 import { load } from 'cheerio';
 
-import { flags } from '@/entrypoint/utils/targets';
 import { SourcererOutput, makeSourcerer } from '@/providers/base';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
@@ -8,13 +7,13 @@ import { NotFoundError } from '@/utils/errors';
 const twoembedBase = 'https://2embed.cc';
 
 async function universalScraper(ctx: MovieScrapeContext | ShowScrapeContext): Promise<SourcererOutput> {
-  const { media, fetcher } = ctx;
+  const { media, proxiedFetcher } = ctx;
 
   let twoembedUrl = `${twoembedBase}/embed/${media.tmdbId}`;
   if (media.type === 'show')
     twoembedUrl = `${twoembedBase}/embedtv/${media.tmdbId}&s=${media.season}&e=${media.episode}`;
 
-  const page = await fetcher<any>(twoembedUrl);
+  const page = await proxiedFetcher<any>(twoembedUrl);
   const twoembedPage = load(page);
 
   const links = twoembedPage('#myDropdown a');
@@ -39,7 +38,7 @@ async function universalScraper(ctx: MovieScrapeContext | ShowScrapeContext): Pr
   const innterEmbedUrl = embedLinks.find((link) => link.name === '2embed')?.url;
   if (!innterEmbedUrl) throw new NotFoundError("Couldn't find 2embed link");
 
-  const innerEmbedPage = await fetcher<any>(innterEmbedUrl);
+  const innerEmbedPage = await proxiedFetcher<any>(innterEmbedUrl);
   const innerEmbedPageHtml = load(innerEmbedPage);
 
   const embedId = innerEmbedPageHtml('iframe').attr('src');
@@ -59,7 +58,7 @@ export const twoembedScraper = makeSourcerer({
   id: '2embed',
   name: '2Embed',
   rank: 1000,
-  flags: [flags.CORS_ALLOWED],
+  flags: [],
   scrapeMovie: universalScraper,
   scrapeShow: universalScraper,
 });
