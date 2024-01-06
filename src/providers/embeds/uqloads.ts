@@ -10,7 +10,11 @@ export const uqloadsScraper = makeEmbed({
   async scrape(ctx) {
     const embed = await ctx.fetcher<string>(ctx.url, {
       headers: {
-        referer: 'https://2embed.cc',
+        Referer: 'https://2embed.cc',
+        Host: new URL(ctx.url).host,
+        'Sec-Fetch-Dest': 'iframe',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'cross-site',
       },
     });
     const embedHtml = load(embed);
