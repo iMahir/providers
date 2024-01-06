@@ -19,6 +19,8 @@ import { zoechipScraper } from '@/providers/sources/zoechip';
 
 import { smashyStreamDScraper } from './embeds/smashystream/dued';
 import { smashyStreamFScraper } from './embeds/smashystream/video1';
+import { uqloadsScraper } from './embeds/uqloads';
+import { twoembedScraper } from './sources/2embed';
 import { smashyStreamScraper } from './sources/smashystream';
 
 export function gatherAllSources(): Array<Sourcerer> {
@@ -33,6 +35,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     vidsrcScraper,
     lookmovieScraper,
     smashyStreamScraper,
+    twoembedScraper,
   ];
 }
 
@@ -50,5 +53,6 @@ export function gatherAllEmbeds(): Array<Embed> {
     streambucketScraper,
     smashyStreamFScraper,
     smashyStreamDScraper,
+    uqloadsScraper,
   ];
 }
